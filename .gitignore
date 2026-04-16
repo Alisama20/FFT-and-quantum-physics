@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.ipynb_checkpoints/
+
+# LaTeX build artefacts
+latex/*.aux
+latex/*.bbl
+latex/*.blg
+latex/*.log
+latex/*.out
+latex/*.toc
+latex/*.lot
+latex/*.lof
+latex/*.fls
+latex/*.fdb_latexmk
+latex/*.synctex.gz
+latex/*.nav
+latex/*.snm
+latex/*.vrb
+
+# OS
+.DS_Store
+Thumbs.db
