@@ -32,38 +32,36 @@ $E_0 = 1/2$ to better than $10^{-10}$.
 
 ## Methods
 
-The shared module [`fft_core.py`](fft_core.py) exposes two functions
-with the same interface,
+The core package [`fft/`](fft) exposes two functions with the same
+interface,
 
 ```python
+from fft import fft_rec, fft_it
+
 X = fft_rec(x, inverse=False)   # recursive Cooley–Tukey
 X = fft_it (x, inverse=False)   # iterative / bit-reversal
 ```
 
 Both expect a 1-D array whose length is a power of two and perform the
 direct DFT for `inverse=False` and the inverse DFT for `inverse=True`.
-All other scripts import these two functions so that the algorithm
-lives in a single place.
+Everything else in the repository imports these two functions so that
+the algorithm lives in a single place.
 
-Each test script targets a representative signal and compares the two
-custom FFTs against NumPy's `np.fft.fft` and the closed-form DFT:
+Numerical validation is organised in two parallel trees:
 
-| Script                  | Signal                                            | Analytical DFT                     |
-|-------------------------|---------------------------------------------------|------------------------------------|
-| `test_constant.py`      | $x[n] = 1$                                        | $X[k] = N\,\delta_{k,0}$           |
-| `test_deltas.py`        | $x[n] = \delta_{n,j_0}$                           | $X[k] = e^{-j 2\pi k j_0/N}$       |
-| `test_sine_cosine.py`   | $\sum a_f \sin(2\pi f n/N) + \sum b_f \cos(\cdot)$| line spectrum at $\pm f$           |
-| `test_gaussians.py`     | Gaussian with width $\sigma$                      | periodic-Gaussian replica sum      |
-| `test_pulse.py`         | square pulse on $[N/4, 3N/4)$                     | geometric-sum closed form          |
-| `test_plane_wave.py`    | $x[n] = e^{j 2\pi k_0 n/N}$                       | $X[k] = N\,\delta_{k,k_0}$         |
-| `test_properties.py`    | complex Gaussian random vectors                   | $F^{-1}F=I$, $F^4=N^2 I$, Parseval |
-| `test_timing.py`        | random vectors up to $N=131\,072$                 | $t(N) \propto N\log_2 N$           |
+- [`tests/`](tests) — `pytest` test suite that asserts $L^2$ error
+  bounds against closed-form DFTs and against `numpy.fft`,
+  covering random complex signals, constant / delta / plane-wave /
+  pulse / sine–cosine inputs, and the DFT theoretical properties
+  ($F^{-1}F=I$, $F^{4}=N^{2}I$, Parseval).
+- [`examples/`](examples) — plain scripts that reproduce the figures
+  embedded in this README (one script per signal family).
 
-The quantum-mechanics application is implemented in
-[`harmonic_oscillator.py`](harmonic_oscillator.py), which propagates a
-trial wavefunction in imaginary time with a second-order
-split-operator (Trotter) scheme and uses the FFT to apply the kinetic
-kicks in momentum space.
+The quantum-mechanics application lives in
+[`quantum/harmonic_oscillator.py`](quantum/harmonic_oscillator.py),
+which propagates a trial wavefunction in imaginary time with a
+second-order split-operator (Trotter) scheme and uses the FFT to apply
+the kinetic kicks in momentum space.
 
 ---
 
@@ -151,7 +149,7 @@ any initial state with non-zero overlap. The relevant lines of the
 
 ```python
 import numpy as np
-from fft_core import fft_it
+from fft import fft_it
 
 # Natural units, power-of-two grid for the FFT
 N, L, dt, n_steps = 1024, 20.0, 0.01, 4000
@@ -219,17 +217,30 @@ The LaTeX sources live in [`latex/`](latex).
 
 ```
 FFT-and-quantum-physics/
-├── fft_core.py                  # shared recursive & iterative FFT
-├── harmonic_oscillator.py       # QHO ground state via FFT + imag. time
-├── test_constant.py             # DFT of x[n] = 1
-├── test_deltas.py               # DFT of Kronecker deltas
-├── test_gaussians.py            # DFT of Gaussian signals
-├── test_plane_wave.py           # DFT of a complex plane wave
-├── test_pulse.py                # DFT of a square pulse
-├── test_sine_cosine.py          # DFT of sines and cosines
-├── test_properties.py           # F^-1 F = I, F^4 = N^2 I, Parseval
-├── test_timing.py               # O(N log N) scaling verification
-├── figures/                     # PNGs produced by the scripts
+├── fft/                         # core package
+│   ├── __init__.py              # re-exports fft_rec, fft_it
+│   └── core.py                  # recursive & iterative Cooley–Tukey FFT
+├── tests/                       # pytest test suite
+│   ├── conftest.py              # puts the repo root on sys.path
+│   ├── test_constant.py         # DFT of x[n] = 1
+│   ├── test_deltas.py           # DFT of Kronecker deltas
+│   ├── test_plane_wave.py       # DFT of a complex plane wave
+│   ├── test_pulse.py            # DFT of a square pulse
+│   ├── test_sine_cosine.py      # DFT of sines and cosines
+│   ├── test_properties.py       # F^-1 F = I, F^4 = N^2 I, Parseval
+│   └── test_vs_numpy.py         # agreement with numpy.fft on random signals
+├── examples/                    # scripts that produce the figures
+│   ├── plot_constant.py
+│   ├── plot_deltas.py
+│   ├── plot_gaussians.py
+│   ├── plot_plane_wave.py
+│   ├── plot_pulse.py
+│   ├── plot_sine_cosine.py
+│   ├── plot_properties.py
+│   └── plot_timing.py
+├── quantum/                     # physics application
+│   └── harmonic_oscillator.py   # QHO ground state via FFT + imag. time
+├── figures/                     # PNGs produced by the examples
 ├── latex/
 │   ├── main_EN.tex
 │   ├── main_ES.tex
@@ -243,31 +254,28 @@ FFT-and-quantum-physics/
 
 ## Usage
 
-Requires Python 3.10+, `numpy` and `matplotlib`.
+Requires Python 3.10+, `numpy`, `matplotlib` and `pytest`.
 
 ```bash
-# Validation against closed-form DFTs
-python test_constant.py
-python test_deltas.py
-python test_gaussians.py
-python test_pulse.py
-python test_sine_cosine.py
-python test_plane_wave.py
+# Run the unit test suite
+pytest
 
-# Theoretical properties (slow: 100 runs × 13 sizes)
-python test_properties.py
-
-# O(N log N) scaling (slow: up to N = 131 072)
-python test_timing.py
+# Reproduce the figures (each script writes its PNG to figures/)
+python examples/plot_constant.py
+python examples/plot_deltas.py
+python examples/plot_gaussians.py
+python examples/plot_pulse.py
+python examples/plot_sine_cosine.py
+python examples/plot_plane_wave.py
+python examples/plot_properties.py     # slow: 100 runs × 13 sizes
+python examples/plot_timing.py         # slow: up to N = 131 072
 
 # Quantum harmonic oscillator
-python harmonic_oscillator.py
+python quantum/harmonic_oscillator.py
 ```
-
-Each script writes its figure to `figures/`.
 
 ---
 
 ## Author
 
-**Ali-Salem Amari** — M.Sc. in Physics, University of Granada.
+**A. S. Amari Rabah** — M.Sc. in Physics, University of Granada.

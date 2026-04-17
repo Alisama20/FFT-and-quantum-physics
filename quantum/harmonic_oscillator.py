@@ -18,9 +18,15 @@ evolution converges to the ground state.  In natural units
 psi_0(x) = pi^(-1/4) exp(-x^2 / 2).
 """
 
+import os
+import sys
+
+# Allow running this script directly (python quantum/harmonic_oscillator.py).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import numpy as np
 import matplotlib.pyplot as plt
-from fft_core import fft_it
+from fft import fft_it
 
 # ------------------------------
 # Parameters (natural units: hbar = m = omega = 1)

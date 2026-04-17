@@ -6,7 +6,9 @@ Checks the O(N log N) scaling by normalising t(N) by N log2(N).
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-from fft_core import fft_rec, fft_it
+import os, sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from fft import fft_rec, fft_it
 
 # ------------------------------
 # Parameters
