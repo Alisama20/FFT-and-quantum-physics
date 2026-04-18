@@ -278,4 +278,10 @@ python quantum/harmonic_oscillator.py
 
 ## Author
 
-**A. S. Amari Rabah** — M.Sc. in Physics, University of Granada.
+**A. S. Amari Rabah**
+
+Developed as part of the coursework for *Mathematical and Numerical Complements* —
+Master's Degree in Physics: Radiation, Nanotechnology, Particles and Astrophysics,
+University of Granada.
+
+
