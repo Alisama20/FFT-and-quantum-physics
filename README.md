@@ -13,6 +13,58 @@ Astrophysics) at the University of Granada.
 
 ---
 
+## Repository structure
+
+```
+FFT-and-quantum-physics/
+├── fft/                         # core package
+│   ├── __init__.py              # re-exports fft_rec, fft_it
+│   └── core.py                  # recursive & iterative Cooley–Tukey FFT
+├── tests/                       # pytest test suite
+│   ├── conftest.py              # puts the repo root on sys.path
+│   ├── test_constant.py         # DFT of x[n] = 1
+│   ├── test_deltas.py           # DFT of Kronecker deltas
+│   ├── test_plane_wave.py       # DFT of a complex plane wave
+│   ├── test_pulse.py            # DFT of a square pulse
+│   ├── test_sine_cosine.py      # DFT of sines and cosines
+│   ├── test_properties.py       # F^-1 F = I, F^4 = N^2 I, Parseval
+│   └── test_vs_numpy.py         # agreement with numpy.fft on random signals
+├── examples/                    # scripts that produce the figures
+│   ├── plot_constant.py
+│   ├── plot_deltas.py
+│   ├── plot_gaussians.py
+│   ├── plot_plane_wave.py
+│   ├── plot_pulse.py
+│   ├── plot_sine_cosine.py
+│   ├── plot_properties.py
+│   └── plot_timing.py
+├── quantum/                     # physics application
+│   └── harmonic_oscillator.py   # QHO ground state via FFT + imag. time
+├── figures/                     # PNGs produced by the examples
+├── latex/
+│   ├── main_EN.tex
+│   ├── main_ES.tex
+│   ├── bibliography.bib
+│   └── escudoUGRmonocromo.png
+├── MemoryEN.pdf
+└── MemoriaES.pdf
+```
+
+---
+
+## Report
+
+The full academic report is available in two languages:
+
+| File | Description |
+|------|-------------|
+| [MemoryEN.pdf](MemoryEN.pdf) | English version — FFT algorithm derivation, split-operator method, quantum harmonic oscillator results |
+| [MemoriaES.pdf](MemoriaES.pdf) | Spanish version (original) |
+
+The LaTeX sources are in the [](latex/) folder together with the bibliography.
+
+---
+
 ## Abstract
 
 We study the discrete Fourier transform (DFT) and its efficient
@@ -27,9 +79,7 @@ evaluation of the Hamiltonian. As a concrete application we compute
 the ground-state energy of the 1D quantum harmonic oscillator with
 an FFT-based split-operator method in imaginary time and recover
 $E_0 = 1/2$ to better than $10^{-10}$.
-
 ---
-
 ## Methods
 
 The core package [`fft/`](fft) exposes two functions with the same
@@ -62,9 +112,7 @@ The quantum-mechanics application lives in
 which propagates a trial wavefunction in imaginary time with a
 second-order split-operator (Trotter) scheme and uses the FFT to apply
 the kinetic kicks in momentum space.
-
 ---
-
 ## Results
 
 ### Particular cases
@@ -107,9 +155,7 @@ scaling. NumPy's FFTPACK is ~2 orders of magnitude faster in absolute
 terms, but the scaling is the same.
 
 ![](figures/timings.png)
-
 ---
-
 ## Quantum harmonic oscillator via FFT
 
 As a concrete quantum-mechanics example we compute the ground state
@@ -196,62 +242,7 @@ and the probability density matches the analytical Gaussian ground
 state to plotting accuracy:
 
 ![](figures/harmonic_oscillator.png)
-
 ---
-
-## Reports
-
-Fully worked-out reports (problem statement, derivations and
-discussion of all the figures above) are provided in both languages:
-
-| Language | File |
-|----------|------|
-| English  | [`MemoryEN.pdf`](MemoryEN.pdf) |
-| Español  | [`MemoriaES.pdf`](MemoriaES.pdf) |
-
-The LaTeX sources live in [`latex/`](latex).
-
----
-
-## Repository structure
-
-```
-FFT-and-quantum-physics/
-├── fft/                         # core package
-│   ├── __init__.py              # re-exports fft_rec, fft_it
-│   └── core.py                  # recursive & iterative Cooley–Tukey FFT
-├── tests/                       # pytest test suite
-│   ├── conftest.py              # puts the repo root on sys.path
-│   ├── test_constant.py         # DFT of x[n] = 1
-│   ├── test_deltas.py           # DFT of Kronecker deltas
-│   ├── test_plane_wave.py       # DFT of a complex plane wave
-│   ├── test_pulse.py            # DFT of a square pulse
-│   ├── test_sine_cosine.py      # DFT of sines and cosines
-│   ├── test_properties.py       # F^-1 F = I, F^4 = N^2 I, Parseval
-│   └── test_vs_numpy.py         # agreement with numpy.fft on random signals
-├── examples/                    # scripts that produce the figures
-│   ├── plot_constant.py
-│   ├── plot_deltas.py
-│   ├── plot_gaussians.py
-│   ├── plot_plane_wave.py
-│   ├── plot_pulse.py
-│   ├── plot_sine_cosine.py
-│   ├── plot_properties.py
-│   └── plot_timing.py
-├── quantum/                     # physics application
-│   └── harmonic_oscillator.py   # QHO ground state via FFT + imag. time
-├── figures/                     # PNGs produced by the examples
-├── latex/
-│   ├── main_EN.tex
-│   ├── main_ES.tex
-│   ├── bibliography.bib
-│   └── escudoUGRmonocromo.png
-├── MemoryEN.pdf
-└── MemoriaES.pdf
-```
-
----
-
 ## Usage
 
 Requires Python 3.10+, `numpy`, `matplotlib` and `pytest`.
@@ -273,9 +264,7 @@ python examples/plot_timing.py         # slow: up to N = 131 072
 # Quantum harmonic oscillator
 python quantum/harmonic_oscillator.py
 ```
-
 ---
-
 ## Author
 
 **A. S. Amari Rabah**
@@ -283,5 +272,3 @@ python quantum/harmonic_oscillator.py
 Developed as part of the coursework for *Mathematical and Numerical Complements* —
 Master's Degree in Physics: Radiation, Nanotechnology, Particles and Astrophysics,
 University of Granada.
-
-
